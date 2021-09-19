@@ -32,7 +32,7 @@ typedef struct
 
     // Stores the index of the earliest piece in the sequence which has a new  column or rotation from the last permutation
     int LastChangedPiece; 
-    
+
     int SolverID;
     int MinStackHeight;     
 
@@ -43,8 +43,8 @@ typedef struct
 // Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
 uint32 getSequencePermutations(sequence_params *sequenceParams);
 
-// Calculate the number of permutations represented by each piece in 'sequenceParams', and write results to 'columnCounterPermutations'
-void getColumnCounterPermutations(sequence_params *sequenceParams, int columnCounterPermutations[MAX_SEQUENCE_SIZE]);
+// Calculate the number of permutations which an increment in each piece's column counter represents
+void getColumnCounterPermutations(sequence_params *sequenceParams);
 
 // Update the counters of 'solver' to the next permutation. Return the index of the earliest piece changed in the next permutation.
 int getNextPermutation(solver *solver, sequence_params *sequenceParams);
@@ -53,7 +53,7 @@ int getNextPermutation(solver *solver, sequence_params *sequenceParams);
 void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
 
 // Update the counters of 'solver' to the next 'n'th permutation
-void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, int columnCounterPermutations[MAX_SEQUENCE_SIZE], uint32 n);
+void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n);
 
 // Set the starting permutation for 'solver' to the permutation in the main solver
 void setSolverStartPermutation(int solver);

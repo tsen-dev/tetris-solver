@@ -27,23 +27,24 @@ uint32 getSequencePermutations(sequence_params *sequenceParams)
     return sequencePermutations;
 }
 
-// Calculate the number of permutations represented by each piece in 'sequenceParams', and write results to 'columnCounterPermutations'
-void getColumnCounterPermutations(sequence_params *sequenceParams, int columnCounterPermutations[MAX_SEQUENCE_SIZE])
+// Calculate the number of permutations which an increment in each piece's column counter represents
+void getColumnCounterPermutations(sequence_params *sequenceParams)
 {        
     char previousPiece;
     int previousPieceRotations;
 
-    columnCounterPermutations[sequenceParams->Size - 1] = 1;
+    sequenceParams->ColumnCounterPermutations[sequenceParams->Size - 1] = 1;
 
     for (int piece = sequenceParams->Size - 2; piece >= 0; piece--)
     {
+        sequenceParams->ColumnCounterPermutations[piece] = 0;
         previousPiece = sequenceParams->Sequence[piece + 1];
         previousPieceRotations = sequenceParams->AllowRotation ? getRotations(sequenceParams->Sequence[piece + 1]) : 1;
              
         for (int rotation = 0; rotation < previousPieceRotations; rotation++) 
-            columnCounterPermutations[piece] += GRID_WIDTH - getTetromino(previousPiece, rotation)->Width + 1;
+            sequenceParams->ColumnCounterPermutations[piece] += GRID_WIDTH + 1 - getTetromino(previousPiece, rotation)->Width;
 
-        columnCounterPermutations[piece] *= columnCounterPermutations[piece + 1];
+        sequenceParams->ColumnCounterPermutations[piece] *= sequenceParams->ColumnCounterPermutations[piece + 1];
     }
 }
 
@@ -112,16 +113,16 @@ void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int
 }
 
 // Update the counters of 'solver' to the next 'n'th permutation
-void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, int columnCounterPermutations[MAX_SEQUENCE_SIZE], uint32 n)
+void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n)
 {
     uint32 permutationsUpdated = 0;
 
     for (int piece = 0; piece < sequenceParams->Size; piece++)
     {
-        while (permutationsUpdated + columnCounterPermutations[piece] <= n)
+        while (permutationsUpdated + sequenceParams->ColumnCounterPermutations[piece] <= n)
         {
             incrementColumnCounter(solver, sequenceParams, piece);                
-            permutationsUpdated += columnCounterPermutations[piece];                    
+            permutationsUpdated += sequenceParams->ColumnCounterPermutations[piece];                    
         }
     }
 }
@@ -145,8 +146,7 @@ void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *seque
     uint32 remainingPermutations = getSequencePermutations(sequenceParams); 
     uint32 solverPermutations;
 
-    int columnCounterPermutations[MAX_SEQUENCE_SIZE] = { 0 };  // Stores the number of permutations each piece's column counter represents    
-    getColumnCounterPermutations(sequenceParams, columnCounterPermutations);
+    getColumnCounterPermutations(sequenceParams);
     setToFirstPermutation(&mainSolver, sequenceParams);
 
     for (int solver = 0; solver < NUMBER_OF_SOLVERS; solver++)
@@ -157,7 +157,7 @@ void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *seque
         else 
         {            
             memcpy(&solvers[solver], &mainSolver, sizeof(mainSolver)); // Set starting permutation of solver
-            getNextNthPermutation(&mainSolver, sequenceParams, columnCounterPermutations, solverPermutations);              
+            getNextNthPermutation(&mainSolver, sequenceParams, solverPermutations);              
             solvers[solver].Permutations = solverPermutations;
             remainingPermutations -= solvers[solver].Permutations;                                    
         }
