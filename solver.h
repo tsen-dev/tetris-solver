@@ -63,6 +63,9 @@ void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *seque
 // Return the y coordinate at which tetromino 'tet' will land when dropped into column 'droppedColumn', given height of the grid's columns in 'columnHeights'
 int getLandingHeight(tetromino *tet, int droppedColumn, int columnHeights[GRID_WIDTH]);
 
+// Return the height of the tetromino stack on the grid, given the height of the grid's columns in 'columnHeights' 
+int getStackHeight(int columnHeights[GRID_WIDTH]);
+
 // Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse the grid state from before dropping the piece at index 'lastChangedPiece'.
 int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChangedPiece);
 

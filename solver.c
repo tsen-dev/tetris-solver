@@ -9,7 +9,7 @@
 // Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
 uint32 getSequencePermutations(sequence_params *sequenceParams)
 {
-    uint32 puzzlePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire puzzle
+    uint32 sequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire puzzle
     int piecePermutations = 0; // Stores permutations for current piece
     int pieceRotations;
 
@@ -20,11 +20,11 @@ uint32 getSequencePermutations(sequence_params *sequenceParams)
         for (int rotation = 0; rotation < pieceRotations; rotation++)
             piecePermutations += GRID_WIDTH + 1 - getTetromino(sequenceParams->Sequence[piece], rotation)->Width;     
 
-        puzzlePermutations *= piecePermutations;
+        sequencePermutations *= piecePermutations;
         piecePermutations = 0;
     }       
 
-    return puzzlePermutations;
+    return sequencePermutations;
 }
 
 // Calculate the number of permutations represented by each piece in 'sequenceParams', and write results to 'columnCounterPermutations'
@@ -191,6 +191,20 @@ void dropTetromino(tetromino *tet, int droppedColumn, int columnHeights[GRID_WID
         columnHeights[droppedColumn + tetCol] = landingHeight + tet->ColumnHeights[tetCol];
 }
 
+// Return the height of the tetromino stack on the grid, given the height of the grid's columns in 'columnHeights' 
+int getStackHeight(int columnHeights[GRID_WIDTH])
+{    
+    int stackHeight = 0;
+
+    for (int col = 0; col < GRID_WIDTH; col++)
+    {
+        if (columnHeights[col] > stackHeight)
+            stackHeight = columnHeights[col];
+    }
+
+    return stackHeight;
+}
+
 // Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse the grid state from before dropping the piece at index 'lastChangedPiece'.
 int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChangedPiece)
 {
@@ -210,14 +224,7 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChan
     tet = getTetromino(sequenceParams->Sequence[sequenceParams->Size-1], solver->RotationCounters[sequenceParams->Size-1]);            
     dropTetromino(tet, solver->ColumnCounters[sequenceParams->Size-1], solver->ColumnHeights);            
 
-    // Get the height of the resulting stack
-    for (int col = 0; col < GRID_WIDTH; col++)
-    {
-        if (solver->ColumnHeights[col] > stackHeight)
-            stackHeight = solver->ColumnHeights[col];
-    }
-
-    return stackHeight;
+    return getStackHeight(solver->ColumnHeights);
 }
 
 // Print the time elapsed and number/percentage of permutations tried for solver 'solver' 
