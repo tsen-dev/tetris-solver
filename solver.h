@@ -32,6 +32,7 @@ typedef struct
 
     int SolverID;
     int MinStackHeight; 
+    uint32 CurrentPermutation;
     uint32 Permutations;    
 } solver;
 
