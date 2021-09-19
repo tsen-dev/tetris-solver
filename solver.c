@@ -244,7 +244,7 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
         int stackHeight;
         int lastChangedPiece = 0;
         
-        for (uint32 permutation = 0; permutation < solvers[solver].Permutations; permutation++)
+        for (solvers[solver].CurrentPermutation = 0; solvers[solver].CurrentPermutation < solvers[solver].Permutations; solvers[solver].CurrentPermutation++)
         {
             stackHeight = tryPermutation(&solvers[solver], sequenceParams, lastChangedPiece);
 
@@ -257,8 +257,8 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
             }
 
             // Print solver progress
-            if (permutation % PROGRESS_DISPLAY_INTERVAL == 0)
-                printSolverProgress(&solvers[solver], permutation, startTime);                     
+            if (solvers[solver].CurrentPermutation % PROGRESS_DISPLAY_INTERVAL == 0)
+                printSolverProgress(&solvers[solver], solvers[solver].CurrentPermutation, startTime);                     
 
             lastChangedPiece = getNextPermutation(&solvers[solver], sequenceParams);                         
         }
