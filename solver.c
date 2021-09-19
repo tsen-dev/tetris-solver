@@ -221,14 +221,14 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChan
 }
 
 // Print the time elapsed and number/percentage of permutations tried for solver 'solver' 
-void printSolverProgress(solver *solver, uint32 currentPermutation, time_t startTime)
+void printSolverProgress(solver *solver, time_t startTime)
 {
     time_t currentTime;
     time(&currentTime);
 
     printf("Solver: %d Permutations tried: %u / %u (%.2f%%) %ds\n", \
-        solver->SolverID, currentPermutation, solver->Permutations, \
-        100.0 * currentPermutation / solver->Permutations, \
+        solver->SolverID, solver->CurrentPermutation, solver->Permutations, \
+        100.0 * solver->CurrentPermutation / solver->Permutations, \
         (long) (currentTime - startTime));  
 }
 
@@ -258,7 +258,7 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
 
             // Print solver progress
             if (solvers[solver].CurrentPermutation % PROGRESS_DISPLAY_INTERVAL == 0)
-                printSolverProgress(&solvers[solver], solvers[solver].CurrentPermutation, startTime);                     
+                printSolverProgress(&solvers[solver], startTime);                     
 
             lastChangedPiece = getNextPermutation(&solvers[solver], sequenceParams);                         
         }

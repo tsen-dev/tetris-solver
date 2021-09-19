@@ -70,7 +70,7 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChan
 void dropTetromino(tetromino *tet, int droppedColumn, int columnHeights[GRID_WIDTH]);
 
 // Print the time elapsed and number/percentage of permutations tried for solver 'solver' 
-void printSolverProgress(solver *solver, uint32 currentPermutation, time_t startTime);
+void printSolverProgress(solver *solver, time_t startTime);
 
 // Try all column/rotation permutations and solve the sequence in 'sequenceParams' using the solvers in 'solvers'
 void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams);
