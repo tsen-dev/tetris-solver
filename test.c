@@ -90,11 +90,11 @@ void printTestFailure(testcase *testCase, solver *receivedSolution)
 
     printf("\nExpected piece rotations: ");
     for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
-        printf("%c:%d ", testCase->SequenceParams.Sequence[piece]*90, testCases->PieceRotations[piece]*90);
+        printf("%c:%d ", testCase->SequenceParams.Sequence[piece], testCases->PieceRotations[piece]*90);
 
     printf("\nReceived piece rotations: ");
     for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
-        printf("%c:%d ", testCase->SequenceParams.Sequence[piece]*90, receivedSolution->BestPieceRotations[piece]*90);
+        printf("%c:%d ", testCase->SequenceParams.Sequence[piece], receivedSolution->BestPieceRotations[piece]*90);
 
     printf("\n\n");
 }
