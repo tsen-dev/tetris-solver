@@ -141,7 +141,7 @@ void setToFirstPermutation(solver *solver, sequence_params *sequenceParams)
 // Set each solver's starting permutation and the number of permutations assigned to it for solving the sequence in 'sequenceParams'
 void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams)
 {
-    solver mainSolver = {{ 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, 0, GRID_HEIGHT, 0, 0};
+    solver mainSolver = {{ 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, 0, 0, GRID_HEIGHT, 0, 0};
     uint32 remainingPermutations = getSequencePermutations(sequenceParams); 
     uint32 solverPermutations;
 

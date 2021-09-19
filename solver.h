@@ -30,8 +30,12 @@ typedef struct
     int BestPieceColumns[MAX_SEQUENCE_SIZE];
     int BestPieceRotations[MAX_SEQUENCE_SIZE];
 
+    // Stores the index of the earliest piece in the sequence which has a new  column or rotation from the last permutation
+    int LastChangedPiece; 
+    
     int SolverID;
-    int MinStackHeight; 
+    int MinStackHeight;     
+
     uint32 CurrentPermutation;
     uint32 Permutations;    
 } solver;
