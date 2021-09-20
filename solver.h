@@ -30,25 +30,30 @@ typedef struct
     int BestPieceColumns[MAX_SEQUENCE_SIZE];
     int BestPieceRotations[MAX_SEQUENCE_SIZE];
 
+    // Stores the index of the earliest piece in the sequence which has a new column or rotation from the last permutation
+    int LastChangedPiece; 
+
     int SolverID;
-    int MinStackHeight; 
+    int MinStackHeight;     
+
+    uint32 CurrentPermutation;
     uint32 Permutations;    
 } solver;
 
 // Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
 uint32 getSequencePermutations(sequence_params *sequenceParams);
 
-// Calculate the number of permutations represented by each piece in 'sequenceParams', and write results to 'columnCounterPermutations'
-void getColumnCounterPermutations(sequence_params *sequenceParams, int columnCounterPermutations[MAX_SEQUENCE_SIZE]);
+// Calculate the number of permutations which an increment in each piece's column counter represents
+void getColumnCounterPermutations(sequence_params *sequenceParams);
 
-// Update the counters of 'solver' to the next permutation. Return the index of the earliest piece changed in the next permutation.
+// Update the counters of 'solver' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the last permutation
 int getNextPermutation(solver *solver, sequence_params *sequenceParams);
 
 // In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Handle any carries to counters of previous tetrominos in the sequence
 void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
 
 // Update the counters of 'solver' to the next 'n'th permutation
-void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, int columnCounterPermutations[MAX_SEQUENCE_SIZE], uint32 n);
+void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n);
 
 // Set the starting permutation for 'solver' to the permutation in the main solver
 void setSolverStartPermutation(int solver);
@@ -62,14 +67,17 @@ void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *seque
 // Return the y coordinate at which tetromino 'tet' will land when dropped into column 'droppedColumn', given height of the grid's columns in 'columnHeights'
 int getLandingHeight(tetromino *tet, int droppedColumn, int columnHeights[GRID_WIDTH]);
 
-// Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse the grid state from before dropping the piece at index 'lastChangedPiece'.
-int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChangedPiece);
+// Return the height of the tetromino stack on the grid, given the height of the grid's columns in 'columnHeights' 
+int getStackHeight(int columnHeights[GRID_WIDTH]);
+
+// Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse a saved intermediate grid state if current permutation has an identical beginning to the previous one
+int tryPermutation(solver *solver, sequence_params *sequenceParams);
 
 // Drop tetromino 'tet' into column 'droppedColumn', and update the heights of the grid's columns in 'columnHeights'.
 void dropTetromino(tetromino *tet, int droppedColumn, int columnHeights[GRID_WIDTH]);
 
 // Print the time elapsed and number/percentage of permutations tried for solver 'solver' 
-void printSolverProgress(solver *solver, uint32 currentPermutation, time_t startTime);
+void printSolverProgress(solver *solver, time_t startTime);
 
 // Try all column/rotation permutations and solve the sequence in 'sequenceParams' using the solvers in 'solvers'
 void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams);
