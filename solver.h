@@ -30,7 +30,7 @@ typedef struct
     int BestPieceColumns[MAX_SEQUENCE_SIZE];
     int BestPieceRotations[MAX_SEQUENCE_SIZE];
 
-    // Stores the index of the earliest piece in the sequence which has a new  column or rotation from the last permutation
+    // Stores the index of the earliest piece in the sequence which has a new column or rotation from the last permutation
     int LastChangedPiece; 
 
     int SolverID;
@@ -46,8 +46,8 @@ uint32 getSequencePermutations(sequence_params *sequenceParams);
 // Calculate the number of permutations which an increment in each piece's column counter represents
 void getColumnCounterPermutations(sequence_params *sequenceParams);
 
-// Update the counters of 'solver' to the next permutation. Update the LastChangedPiece attribute of 'solver'
-void getNextPermutation(solver *solver, sequence_params *sequenceParams);
+// Update the counters of 'solver' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the last permutation
+int getNextPermutation(solver *solver, sequence_params *sequenceParams);
 
 // In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Handle any carries to counters of previous tetrominos in the sequence
 void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
