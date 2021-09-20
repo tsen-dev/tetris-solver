@@ -46,8 +46,8 @@ uint32 getSequencePermutations(sequence_params *sequenceParams);
 // Calculate the number of permutations which an increment in each piece's column counter represents
 void getColumnCounterPermutations(sequence_params *sequenceParams);
 
-// Update the counters of 'solver' to the next permutation. Return the index of the earliest piece changed in the next permutation.
-int getNextPermutation(solver *solver, sequence_params *sequenceParams);
+// Update the counters of 'solver' to the next permutation. Update the LastChangedPiece attribute of 'solver'
+void getNextPermutation(solver *solver, sequence_params *sequenceParams);
 
 // In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Handle any carries to counters of previous tetrominos in the sequence
 void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
@@ -70,8 +70,8 @@ int getLandingHeight(tetromino *tet, int droppedColumn, int columnHeights[GRID_W
 // Return the height of the tetromino stack on the grid, given the height of the grid's columns in 'columnHeights' 
 int getStackHeight(int columnHeights[GRID_WIDTH]);
 
-// Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse the grid state from before dropping the piece at index 'lastChangedPiece'.
-int tryPermutation(solver *solver, sequence_params *sequenceParams, int lastChangedPiece);
+// Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse a saved intermediate grid state if current permutation has an identical beginning to the previous one
+int tryPermutation(solver *solver, sequence_params *sequenceParams);
 
 // Drop tetromino 'tet' into column 'droppedColumn', and update the heights of the grid's columns in 'columnHeights'.
 void dropTetromino(tetromino *tet, int droppedColumn, int columnHeights[GRID_WIDTH]);
