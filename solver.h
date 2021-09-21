@@ -49,8 +49,8 @@ void getColumnCounterPermutations(sequence_params *sequenceParams);
 // Update the counters of 'solver' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the last permutation
 int getNextPermutation(solver *solver, sequence_params *sequenceParams);
 
-// In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Handle any carries to counters of previous tetrominos in the sequence
-void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
+// In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before the increment
+int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
 
 // Update the counters of 'solver' to the next 'n'th permutation
 void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n);

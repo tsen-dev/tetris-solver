@@ -82,8 +82,8 @@ int getNextPermutation(solver *solver, sequence_params *sequenceParams)
     return FALSE; 
 }
 
-// In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Handle any carries to counters of previous tetrominos in the sequence
-void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex)
+// In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before the increment
+int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex)
 {
      for (int piece = pieceIndex; piece >= 0; piece--)
     {
@@ -106,13 +106,15 @@ void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int
             else
             {
                 solver->ColumnCounts[piece] = GRID_WIDTH + 1 - getTetromino(sequenceParams->Sequence[piece], solver->RotationCounters[piece])->Width;                        
-                break; // Don't change other pieces
+                return piece;
             } 
         }
 
         // Don't change other pieces
-        else break;
+        else return piece;
     }    
+    
+    return FALSE;
 }
 
 // Update the counters of 'solver' to the next 'n'th permutation
@@ -228,9 +230,8 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams)
         // Skip current permutation (and all future permutations with an identical beginning) if it is determined to be no better than the current best permutation
         if (getStackHeight(solver->ColumnHeights) >= solver->MinStackHeight)
         {
-            incrementColumnCounter(solver, sequenceParams, piece);
+            solver->LastChangedPiece = incrementColumnCounter(solver, sequenceParams, piece);
             solver->CurrentPermutation += sequenceParams->ColumnCounterPermutations[piece];
-            solver->LastChangedPiece = piece;
             return SKIPPED_PERMUTATION;
         }
     }
@@ -276,7 +277,7 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
                     solvers[solver].MinStackHeight = stackHeight;
                     memcpy(solvers[solver].BestPieceColumns, solvers[solver].ColumnCounters, sizeof(solvers[solver].BestPieceColumns));
                     memcpy(solvers[solver].BestPieceRotations, solvers[solver].RotationCounters, sizeof(solvers[solver].BestPieceRotations)); 
-                    solvers[solver].LastChangedPiece = 0; // Invalidate intermediate grid states since the minStackHeight is lower now
+                    solvers[solver].LastChangedPiece = 0; // Invalidate intermediate grid states since the minStackHeight has changed 
                     getNextPermutation(&solvers[solver], sequenceParams);                         
                 }
                 
