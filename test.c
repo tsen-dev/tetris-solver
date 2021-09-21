@@ -111,7 +111,7 @@ void runTests()
             }                
             else 
             {
-                printf("Expected piece permutations: ");
+                printf("Expected permutation: ");
                 for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
                     printf("%c:%d(%d) ", testCases[test].SequenceParams.Sequence[piece], testCases[test].PieceColumns[piece], testCases[test].PieceRotations[piece]*90);
                 printf("\n\n");              

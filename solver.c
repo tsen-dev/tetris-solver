@@ -327,7 +327,7 @@ void printSolution(solver *solver, sequence_params *sequenceParams, time_t start
                             solver->BestPieceColumns[piece], grid, gridColumnHeights);
     printGrid(grid);    
 
-    printf("Best piece permutations: ");
+    printf("Best permutation: ");
     for (int piece = 0; piece < sequenceParams->Size; piece++)
         printf("%c:%d(%d) ", sequenceParams->Sequence[piece], solver->BestPieceColumns[piece], solver->BestPieceRotations[piece]*90);
     printf("\n\n");
