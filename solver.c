@@ -321,11 +321,17 @@ void printSolution(solver *solver, sequence_params *sequenceParams, time_t start
     memset(grid, '_', sizeof(grid));
     memset(gridColumnHeights, 0, sizeof(gridColumnHeights));    
 
+    // Drop the sequence into the grid, using the best permutation
     for (int piece = 0; piece < sequenceParams->Size; piece++)
         dropTetrominoToGrid(getTetromino(sequenceParams->Sequence[piece], solver->BestPieceRotations[piece]), \
                             solver->BestPieceColumns[piece], grid, gridColumnHeights);
-
     printGrid(grid);    
+
+    printf("Best piece permutations: ");
+    for (int piece = 0; piece < sequenceParams->Size; piece++)
+        printf("%c:%d(%d) ", sequenceParams->Sequence[piece], solver->BestPieceColumns[piece], solver->BestPieceRotations[piece]*90);
+    printf("\n\n");
+
     printf("Puzzle: %.*s\nTried all %u permutations!\nMinimum stack height: %d\nElapsed time: %lds\n\n", \
         sequenceParams->Size, sequenceParams->Sequence, getSequencePermutations(sequenceParams), solver->MinStackHeight, (long)(endTime-startTime));
 }

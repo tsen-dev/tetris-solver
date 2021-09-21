@@ -77,28 +77,6 @@ solver *solveTestCaseSequence(sequence_params *testSequenceParams, solver solver
     return bestSolver;
 }
 
-// Display the expected and received values for a test case
-void printTestFailure(testcase *testCase, solver *receivedSolution)
-{
-    printf("Expected piece columns: ");
-    for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
-        printf("%c:%d ", testCase->SequenceParams.Sequence[piece], testCase->PieceColumns[piece]);
-
-    printf("\nReceived piece columns: ");
-    for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
-        printf("%c:%d ", testCase->SequenceParams.Sequence[piece], receivedSolution->BestPieceColumns[piece]);
-
-    printf("\nExpected piece rotations: ");
-    for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
-        printf("%c:%d ", testCase->SequenceParams.Sequence[piece], testCase->PieceRotations[piece]*90);
-
-    printf("\nReceived piece rotations: ");
-    for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
-        printf("%c:%d ", testCase->SequenceParams.Sequence[piece], receivedSolution->BestPieceRotations[piece]*90);
-
-    printf("\n\n");
-}
-
 // Validate the solving routines of the program by comparing its solutions for the test cases to the known solutions in test.h
 void runTests()
 {
@@ -133,8 +111,12 @@ void runTests()
             }                
             else 
             {
+                printf("Expected piece permutations: ");
+                for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
+                    printf("%c:%d(%d) ", testCases[test].SequenceParams.Sequence[piece], testCases[test].PieceColumns[piece], testCases[test].PieceRotations[piece]*90);
+                printf("\n\n");              
+                
                 printf("Test %d: FAILED\n\n", test); 
-                printTestFailure(&testCases[test], bestSolver);                
                 failedTests++;
             }
         }

@@ -18,9 +18,6 @@ typedef struct
 // Solve the sequence in 'testSequenceParams', display the solution, and return the solver holding the solution
 solver *solveTestCaseSequence(sequence_params *testSequenceParams, solver solvers[NUMBER_OF_SOLVERS]);
 
-// Display the expected and received values for a test case
-void printTestFailure(testcase *testCase, solver *receivedSolution);
-
 // Validate the solving routines of the program by comparing its solutions of the test cases to the known solutions in test.h
 void runTests();
 
