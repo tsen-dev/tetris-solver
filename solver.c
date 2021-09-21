@@ -113,7 +113,7 @@ int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int 
         // Don't change other pieces
         else return piece;
     }    
-    
+
     return FALSE;
 }
 
@@ -232,6 +232,19 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams)
         {
             solver->LastChangedPiece = incrementColumnCounter(solver, sequenceParams, piece);
             solver->CurrentPermutation += sequenceParams->ColumnCounterPermutations[piece];
+
+            for (int pieceIndex = piece + 1; pieceIndex < sequenceParams->Size; pieceIndex++)
+            {
+                solver->CurrentPermutation -= sequenceParams->ColumnCounterPermutations[pieceIndex] * solver->ColumnCounters[pieceIndex];
+                solver->ColumnCounters[pieceIndex] = 0;
+                solver->RotationCounters[pieceIndex] = 0;
+
+                if (solver->RotationCounters[pieceIndex] == 0) continue;
+
+                for (int rotation = 0; rotation < solver->RotationCounters[pieceIndex]; rotation++)
+                    solver->CurrentPermutation -= sequenceParams->ColumnCounterPermutations[pieceIndex] * (GRID_WIDTH + 1 - getTetromino(sequenceParams->Sequence[pieceIndex], rotation)->Width);
+            }
+            
             return SKIPPED_PERMUTATION;
         }
     }
