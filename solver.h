@@ -70,6 +70,9 @@ int getLandingHeight(tetromino *tet, int droppedColumn, int columnHeights[GRID_W
 // Return the height of the tetromino stack on the grid, given the height of the grid's columns in 'columnHeights' 
 int getStackHeight(int columnHeights[GRID_WIDTH]);
 
+// Skip the current permutation in 'solver' and all future permutations which are identical up to piece 'lastDeterminedPiece', as they were determined to be no better than the current best
+void getNextUndeterminedPermutation(solver *solver, sequence_params *sequenceParams, int lastDeterminedPiece);
+
 // Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse a saved intermediate grid state if current permutation has an identical beginning to the previous one
 int tryPermutation(solver *solver, sequence_params *sequenceParams);
 

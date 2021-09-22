@@ -120,8 +120,8 @@ int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int 
 // Update the counters of 'solver' to the next 'n'th permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before calling this function
 int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n)
 {
-    int lastChangedPiece;
     uint32 permutationsUpdated = 0;
+    int lastChangedPiece;
 
     for (int piece = 0; piece < sequenceParams->Size; piece++)
     {
@@ -213,6 +213,27 @@ int getStackHeight(int columnHeights[GRID_WIDTH])
     return stackHeight;
 }
 
+// Skip the current permutation in 'solver' and all future permutations which are identical up to piece 'lastDeterminedPiece', as they were determined to be no better than the current best
+void getNextUndeterminedPermutation(solver *solver, sequence_params *sequenceParams, int lastDeterminedPiece)
+{
+    uint32 skippedPermutations;
+    
+    // Increment the last determined piece
+    skippedPermutations = sequenceParams->ColumnCounterPermutations[lastDeterminedPiece];
+
+    // Reset the columns and rotations of the following pieces
+    for (int piece = lastDeterminedPiece + 1; piece < sequenceParams->Size; piece++)
+    {
+        skippedPermutations -= sequenceParams->ColumnCounterPermutations[piece] * solver->ColumnCounters[piece];
+
+        for (int rotation = 0; rotation < solver->RotationCounters[piece]; rotation++)
+            skippedPermutations -= sequenceParams->ColumnCounterPermutations[piece] * (GRID_WIDTH + 1 - getTetromino(sequenceParams->Sequence[piece], rotation)->Width);                    
+    }
+    
+    solver->LastChangedPiece = getNextNthPermutation(solver, sequenceParams, skippedPermutations);
+    solver->CurrentPermutation += skippedPermutations;
+}
+
 // Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack.
 int tryPermutation(solver *solver, sequence_params *sequenceParams)
 {
@@ -233,21 +254,7 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams)
         // Skip current permutation (and all future permutations with an identical beginning) if it is determined to be no better than the current best permutation
         if (getStackHeight(solver->ColumnHeights) >= solver->MinStackHeight)
         {
-            solver->LastChangedPiece = incrementColumnCounter(solver, sequenceParams, piece);
-            solver->CurrentPermutation += sequenceParams->ColumnCounterPermutations[piece];
-
-            for (int pieceIndex = piece + 1; pieceIndex < sequenceParams->Size; pieceIndex++)
-            {
-                solver->CurrentPermutation -= sequenceParams->ColumnCounterPermutations[pieceIndex] * solver->ColumnCounters[pieceIndex];
-                solver->ColumnCounters[pieceIndex] = 0;
-                solver->RotationCounters[pieceIndex] = 0;
-
-                if (solver->RotationCounters[pieceIndex] == 0) continue;
-
-                for (int rotation = 0; rotation < solver->RotationCounters[pieceIndex]; rotation++)
-                    solver->CurrentPermutation -= sequenceParams->ColumnCounterPermutations[pieceIndex] * (GRID_WIDTH + 1 - getTetromino(sequenceParams->Sequence[pieceIndex], rotation)->Width);
-            }
-            
+            getNextUndeterminedPermutation(solver, sequenceParams, piece);
             return SKIPPED_PERMUTATION;
         }
     }
@@ -281,7 +288,7 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
         int stackHeight;        
         
         while (solvers[solver].CurrentPermutation < solvers[solver].Permutations)
-        {
+        {        
             stackHeight = tryPermutation(&solvers[solver], sequenceParams);
             
             // If the permutation wasn't skipped 
