@@ -49,11 +49,11 @@ void getColumnCounterPermutations(sequence_params *sequenceParams);
 // Update the counters of 'solver' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the last permutation
 int getNextPermutation(solver *solver, sequence_params *sequenceParams);
 
-// In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Handle any carries to counters of previous tetrominos in the sequence
-void incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
+// In 'solver', update the column counter of the tetromino at index 'pieceIndex' to the next permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before the increment
+int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
 
-// Update the counters of 'solver' to the next 'n'th permutation
-void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n);
+// Update the counters of 'solver' to the next 'n'th permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before calling this function
+int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n);
 
 // Set the starting permutation for 'solver' to the permutation in the main solver
 void setSolverStartPermutation(int solver);
@@ -69,6 +69,9 @@ int getLandingHeight(tetromino *tet, int droppedColumn, int columnHeights[GRID_W
 
 // Return the height of the tetromino stack on the grid, given the height of the grid's columns in 'columnHeights' 
 int getStackHeight(int columnHeights[GRID_WIDTH]);
+
+// Skip the current permutation in 'solver' and all future permutations which are identical up to piece 'lastDeterminedPiece', as they were determined to be no better than the current best
+void getNextUndeterminedPermutation(solver *solver, sequence_params *sequenceParams, int lastDeterminedPiece);
 
 // Stack the sequence in the current permutation of 'solver' and return the height of the resulting stack. Reuse a saved intermediate grid state if current permutation has an identical beginning to the previous one
 int tryPermutation(solver *solver, sequence_params *sequenceParams);
