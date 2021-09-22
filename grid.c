@@ -13,7 +13,7 @@ void printGrid(char grid[GRID_HEIGHT][GRID_WIDTH])
     for (int row = 0; row < GRID_HEIGHT; row++)
     {
         for (int col = 0; col < GRID_WIDTH; col++) 
-            printf("%c", grid[row][col]);            
+            printf("%c ", grid[row][col]);            
         printf("\n");
     }    
     
