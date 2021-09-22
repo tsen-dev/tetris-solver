@@ -117,19 +117,22 @@ int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int 
     return FALSE;
 }
 
-// Update the counters of 'solver' to the next 'n'th permutation
-void getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n)
+// Update the counters of 'solver' to the next 'n'th permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before calling this function
+int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n)
 {
+    int lastChangedPiece;
     uint32 permutationsUpdated = 0;
 
     for (int piece = 0; piece < sequenceParams->Size; piece++)
     {
         while (permutationsUpdated + sequenceParams->ColumnCounterPermutations[piece] <= n)
         {
-            incrementColumnCounter(solver, sequenceParams, piece);                
+            lastChangedPiece = incrementColumnCounter(solver, sequenceParams, piece);                
             permutationsUpdated += sequenceParams->ColumnCounterPermutations[piece];                    
         }
     }
+
+    return lastChangedPiece;
 }
 
 // Set 'solver' to the first permutation of the sequence in 'sequenceParams'
