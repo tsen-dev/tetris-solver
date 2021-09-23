@@ -11,7 +11,7 @@
 // Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
 uint32 getSequencePermutations(sequence_params *sequenceParams)
 {
-    uint32 sequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire puzzle
+    uint32 sequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire sequence
     int piecePermutations = 0; // Stores permutations for current piece
     int pieceRotations;
 
@@ -356,7 +356,7 @@ void printSolution(solver *solver, sequence_params *sequenceParams, time_t start
         printf("%c:%d(%d) ", sequenceParams->Sequence[piece], solver->BestPieceColumns[piece], solver->BestPieceRotations[piece]*90);
     printf("\n\n");
 
-    printf("Puzzle: %.*s\nTried all %u permutations!\nMinimum stack height: %d\nElapsed time: %lds\n\n", \
+    printf("Sequence: %.*s\nTried all %u permutations!\nMinimum stack height: %d\nElapsed time: %lds\n\n", \
         sequenceParams->Size, sequenceParams->Sequence, getSequencePermutations(sequenceParams), solver->MinStackHeight, (long)(endTime-startTime));
 }
 
@@ -369,7 +369,7 @@ void solveSequence(sequence_params *sequenceParams)
     time_t startTime;
     time(&startTime);
 
-    printf("Puzzle: %.*s\nSolving...\n\n", sequenceParams->Size, sequenceParams->Sequence);
+    printf("Sequence: %.*s\nSolving...\n\n", sequenceParams->Size, sequenceParams->Sequence);
 
     initialiseSolvers(solvers, sequenceParams);
     runSolvers(solvers, sequenceParams);

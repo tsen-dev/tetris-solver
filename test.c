@@ -12,7 +12,7 @@ testcase testCases[NUMBER_OF_TESTS] =
     {
         {
             "ZOZS",
-            TEST_SEQUENCE_LENGTH,
+            4,
             FALSE
         },
             {0, 0, 2, 2},
@@ -22,7 +22,7 @@ testcase testCases[NUMBER_OF_TESTS] =
     {
         {
             "ZISS",
-            TEST_SEQUENCE_LENGTH,
+            4,
             TRUE
         },
             {4, 0, 2, 0},
@@ -32,7 +32,7 @@ testcase testCases[NUMBER_OF_TESTS] =
     {
         {
             "SISS",
-            TEST_SEQUENCE_LENGTH,
+            4,
             FALSE
         },
             {0, 5, 2, 0},
@@ -42,7 +42,7 @@ testcase testCases[NUMBER_OF_TESTS] =
     {
         {
             "SZLS",
-            TEST_SEQUENCE_LENGTH,
+            4,
             TRUE
         },
             {0, 0, 3, 4},
@@ -52,11 +52,61 @@ testcase testCases[NUMBER_OF_TESTS] =
     {
         {
             "SSJS",
-            TEST_SEQUENCE_LENGTH,
+            4,
             FALSE
         },
             {0, 0, 4, 3},
             {0, 0, 0, 0}        
+    },
+
+    {
+        {
+            "JSLITTLL",
+            8,
+            FALSE
+        },
+            {3, 1, 0, 5, 0, 0, 3, 4},
+            {0, 0, 0, 0, 0, 0, 0, 0}        
+    },
+
+    {
+        {
+            "IOTSLJZI",
+            8,
+            TRUE
+        },
+            {0, 1, 0, 3, 3, 4, 3, 0},
+            {0, 0, 0, 0, 3, 0, 1, 1}        
+    },
+
+    {
+        {
+            "TTTTTTTT",
+            8,
+            TRUE
+        },
+            {0, 0, 0, 3, 3, 2, 4, 3},
+            {0, 2, 1, 2, 1, 1, 3, 0}        
+    },
+
+    {
+        {
+            "IOTIOTIO",
+            8,
+            TRUE
+        },
+            {0, 1, 0, 5, 3, 3, 0, 4},
+            {0, 0, 0, 0, 0, 1, 1, 0}        
+    },
+
+    {
+        {
+            "LLLLLLLL",
+            8,
+            TRUE
+        },
+	        {0, 0, 2, 3, 4, 2, 4, 1},
+ 	        {0, 0, 0, 0, 2, 3, 2, 3}  
     }
 };
 
@@ -83,8 +133,8 @@ void runTests()
     if (GRID_WIDTH != TEST_GRID_WIDTH) 
         printf("GRID_WIDTH is different from TEST_GRID_WIDTH i.e. the width of the grid used when computing the test cases. Can't run tests!\n");
 
-    else if (MAX_SEQUENCE_SIZE < TEST_SEQUENCE_LENGTH)
-        printf("MAX_SEQUENCE_SIZE is less than TEST_SEQUENCE_SIZE, can't run tests!\n");
+    else if (MAX_SEQUENCE_SIZE < MAX_TEST_SEQUENCE_LENGTH)
+        printf("MAX_SEQUENCE_SIZE is less than some test sequences (MAX_TEST_SEQUENCE_SIZE), can't run tests!\n");
 
     else 
     {
@@ -98,8 +148,8 @@ void runTests()
 
         for (int test = 0; test < NUMBER_OF_TESTS; test++)
         {        
-            printf("Test: %d\nPuzzle: %.*s\nRotation: %s\nSolving...\n\n", \
-            test, TEST_SEQUENCE_LENGTH, testCases[test].SequenceParams.Sequence, testCases[test].SequenceParams.AllowRotation == TRUE ? "Y" : "N");
+            printf("Test: %d\nSequence: %.*s\nRotation: %s\nSolving...\n\n", \
+            test, testCases[test].SequenceParams.Size, testCases[test].SequenceParams.Sequence, testCases[test].SequenceParams.AllowRotation == TRUE ? "Y" : "N");
 
             bestSolver = solveTestCaseSequence(&testCases[test].SequenceParams, solvers);
 
@@ -112,7 +162,7 @@ void runTests()
             else 
             {
                 printf("Expected permutation: ");
-                for (int piece = 0; piece < TEST_SEQUENCE_LENGTH; piece++)
+                for (int piece = 0; piece < testCases[test].SequenceParams.Size; piece++)
                     printf("%c:%d(%d) ", testCases[test].SequenceParams.Sequence[piece], testCases[test].PieceColumns[piece], testCases[test].PieceRotations[piece]*90);
                 printf("\n\n");              
                 

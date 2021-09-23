@@ -13,7 +13,7 @@ int main()
 
     while (TRUE)
     {        
-        input = getChar("1. Solve a puzzle\n2. Debug mode\n3. Run tests\n4. Exit\nEnter 1, 2, 3, or 4\n\n\0");
+        input = getChar("1. Solve a sequence\n2. Debug mode\n3. Run tests\n4. Exit\nEnter 1, 2, 3, or 4\n\n\0");
 
         switch (input)
         {

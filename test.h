@@ -3,16 +3,16 @@
 
 #include "solver.h"
 
-#define NUMBER_OF_TESTS 5
+#define NUMBER_OF_TESTS 10
 
 #define TEST_GRID_WIDTH 6 // The grid width for which the test solutions were generated
-#define TEST_SEQUENCE_LENGTH 4 // Length of the puzzles used in the test cases
+#define MAX_TEST_SEQUENCE_LENGTH 8 // Maximum length of the sequences used in the test cases
 
 typedef struct
 {
     sequence_params SequenceParams;
-    int PieceColumns[TEST_SEQUENCE_LENGTH]; // Stores which column each piece is dropped into
-    int PieceRotations[TEST_SEQUENCE_LENGTH]; // Stores which rotation each piece is dropped in
+    int PieceColumns[MAX_TEST_SEQUENCE_LENGTH]; // Stores which column each piece is dropped into
+    int PieceRotations[MAX_TEST_SEQUENCE_LENGTH]; // Stores which rotation each piece is dropped in
 } testcase;
 
 // Solve the sequence in 'testSequenceParams', display the solution, and return the solver holding the solution

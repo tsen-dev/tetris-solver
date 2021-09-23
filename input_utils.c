@@ -57,7 +57,7 @@ int getSequence(sequence_params *sequenceParams)
     char input;
     sequenceParams->Size = 0;
 
-    printf("Enter your puzzle (max length %d):\n", MAX_SEQUENCE_SIZE);
+    printf("Enter your sequence (max length %d):\n", MAX_SEQUENCE_SIZE);
 
     while ((input = getchar()) != '\n' && sequenceParams->Size < MAX_SEQUENCE_SIZE) 
     {
@@ -83,7 +83,7 @@ int getSequence(sequence_params *sequenceParams)
 
     if (input != '\n') 
     {   
-        printf("Puzzle's size is longer than MAX_SEQUENCE_SIZE (%d)!\n", MAX_SEQUENCE_SIZE);     
+        printf("Sequence's size is longer than MAX_SEQUENCE_SIZE (%d)!\n", MAX_SEQUENCE_SIZE);     
         while (getchar() != '\n');        
         return FALSE;
     }

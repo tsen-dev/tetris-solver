@@ -26,7 +26,7 @@ typedef struct
     // Stores the states of the grid after each tetromino is dropped
     int SavedColumnHeights[MAX_SEQUENCE_SIZE-1][GRID_WIDTH];
 
-    // Stores the best column/rotation of each puzzle piece in the best permutation
+    // Stores the best column/rotation of each sequence piece in the best permutation
     int BestPieceColumns[MAX_SEQUENCE_SIZE];
     int BestPieceRotations[MAX_SEQUENCE_SIZE];
 
