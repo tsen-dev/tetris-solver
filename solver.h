@@ -1,14 +1,14 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include <stdint.h>
+
 #include "grid.h"
 #include "tetromino.h"
 #include "input_utils.h"
 
 #define NUMBER_OF_SOLVERS 10
 #define PROGRESS_DISPLAY_INTERVAL 10000000
-
-typedef unsigned int uint32;
 
 typedef struct
 {
@@ -36,12 +36,12 @@ typedef struct
     int SolverID;
     int MinStackHeight;     
 
-    uint32 CurrentPermutation;
-    uint32 Permutations;    
+    uint64_t CurrentPermutation;
+    uint64_t Permutations;    
 } solver;
 
 // Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
-uint32 getSequencePermutations(sequence_params *sequenceParams);
+uint64_t getSequencePermutations(sequence_params *sequenceParams);
 
 // Calculate the number of permutations which an increment in each piece's column counter represents
 void getColumnCounterPermutations(sequence_params *sequenceParams);
@@ -53,7 +53,7 @@ int getNextPermutation(solver *solver, sequence_params *sequenceParams);
 int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int pieceIndex);
 
 // Update the counters of 'solver' to the next 'n'th permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before calling this function
-int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n);
+int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint64_t n);
 
 // Set the starting permutation for 'solver' to the permutation in the main solver
 void setSolverStartPermutation(int solver);
@@ -92,7 +92,7 @@ solver * getBestSolver(solver solvers[NUMBER_OF_SOLVERS]);
 void printSolution(solver *solver, sequence_params *sequenceParams, time_t startTime);
 
 // Print the internal state and counters of 'solver'
-void printSolver(int solver, uint32 remainingPermutations);
+void printSolver(int solver, uint64_t remainingPermutations);
 
 // Solve the tetromino sequence in 'sequenceParams' and display the solution
 void solveSequence(sequence_params *sequenceParams);

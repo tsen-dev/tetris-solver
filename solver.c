@@ -9,9 +9,10 @@
 #define SKIPPED_PERMUTATION -1
 
 // Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
-uint32 getSequencePermutations(sequence_params *sequenceParams)
+uint64_t getSequencePermutations(sequence_params *sequenceParams)
 {
-    uint32 sequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire sequence
+    // DONT NEED CONDITIONAL HERE ???
+    uint64_t sequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire sequence
     int piecePermutations = 0; // Stores permutations for current piece
     int pieceRotations;
 
@@ -118,9 +119,9 @@ int incrementColumnCounter(solver *solver, sequence_params *sequenceParams, int 
 }
 
 // Update the counters of 'solver' to the next 'n'th permutation. Return the index of the earliest piece in the sequence which has a new column or rotation from the permutation before calling this function
-int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint32 n)
+int getNextNthPermutation(solver *solver, sequence_params *sequenceParams, uint64_t n)
 {
-    uint32 permutationsUpdated = 0;
+    uint64_t permutationsUpdated = 0;
     int lastChangedPiece;
 
     for (int piece = 0; piece < sequenceParams->Size; piece++)
@@ -151,8 +152,8 @@ void setToFirstPermutation(solver *solver, sequence_params *sequenceParams)
 void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams)
 {
     solver mainSolver = {{ 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, 0, 0, GRID_HEIGHT, 0, 0};
-    uint32 remainingPermutations = getSequencePermutations(sequenceParams); 
-    uint32 solverPermutations;
+    uint64_t remainingPermutations = getSequencePermutations(sequenceParams); 
+    uint64_t solverPermutations;
 
     getColumnCounterPermutations(sequenceParams);
     setToFirstPermutation(&mainSolver, sequenceParams);
@@ -216,7 +217,7 @@ int getStackHeight(int columnHeights[GRID_WIDTH])
 // Skip the current permutation in 'solver' and all future permutations which are identical up to piece 'lastDeterminedPiece', as they were determined to be no better than the current best
 void getNextUndeterminedPermutation(solver *solver, sequence_params *sequenceParams, int lastDeterminedPiece)
 {
-    uint32 skippedPermutations;
+    uint64_t skippedPermutations;
     
     // Increment the last determined piece
     skippedPermutations = sequenceParams->ColumnCounterPermutations[lastDeterminedPiece];
@@ -248,15 +249,16 @@ int tryPermutation(solver *solver, sequence_params *sequenceParams)
     for (int piece = solver->LastChangedPiece; piece < sequenceParams->Size-1; piece++)
     {
         tet = getTetromino(sequenceParams->Sequence[piece], solver->RotationCounters[piece]);            
-        dropTetromino(tet, solver->ColumnCounters[piece], solver->ColumnHeights);            
-        memcpy(solver->SavedColumnHeights[piece], solver->ColumnHeights, sizeof(int)*GRID_WIDTH);
+        dropTetromino(tet, solver->ColumnCounters[piece], solver->ColumnHeights);                    
 
-        // Skip current permutation (and all future permutations with an identical beginning) if it is determined to be no better than the current best permutation
-        if (getStackHeight(solver->ColumnHeights) >= solver->MinStackHeight)
+        if (getStackHeight(solver->ColumnHeights) < solver->MinStackHeight) // Save intermediate grid state as it can be used again
+            memcpy(solver->SavedColumnHeights[piece], solver->ColumnHeights, sizeof(int)*GRID_WIDTH);
+
+        else // Skip current permutation (and all future permutations with an identical beginning) if it is determined to be no better than the current best permutation
         {
             getNextUndeterminedPermutation(solver, sequenceParams, piece);
             return SKIPPED_PERMUTATION;
-        }
+        }        
     }
     tet = getTetromino(sequenceParams->Sequence[sequenceParams->Size-1], solver->RotationCounters[sequenceParams->Size-1]);            
     dropTetromino(tet, solver->ColumnCounters[sequenceParams->Size-1], solver->ColumnHeights);            
@@ -270,7 +272,7 @@ void printSolverProgress(solver *solver, time_t startTime)
     time_t currentTime;
     time(&currentTime);
 
-    printf("Solver: %d Permutations tried: %u / %u (%.2f%%) %ds\n", \
+    printf("Solver: %d Permutations tried: %llu / %llu (%.2f%%) %ds\n", \
         solver->SolverID, solver->CurrentPermutation, solver->Permutations, \
         100.0 * solver->CurrentPermutation / solver->Permutations, \
         (long) (currentTime - startTime));  
@@ -356,7 +358,7 @@ void printSolution(solver *solver, sequence_params *sequenceParams, time_t start
         printf("%c:%d(%d) ", sequenceParams->Sequence[piece], solver->BestPieceColumns[piece], solver->BestPieceRotations[piece]*90);
     printf("\n\n");
 
-    printf("Sequence: %.*s\nTried all %u permutations!\nMinimum stack height: %d\nElapsed time: %lds\n\n", \
+    printf("Sequence: %.*s\nTried all %llu permutations!\nMinimum stack height: %d\nElapsed time: %lds\n\n", \
         sequenceParams->Size, sequenceParams->Sequence, getSequencePermutations(sequenceParams), solver->MinStackHeight, (long)(endTime-startTime));
 }
 

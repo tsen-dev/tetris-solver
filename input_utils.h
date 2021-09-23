@@ -1,6 +1,8 @@
 #ifndef INPUT_UTILS_H
 #define INPUT_UTILS_H
 
+#include <stdint.h>
+
 #include "tetromino.h"
 
 typedef struct // Stores the input parameters for a sequence
@@ -8,7 +10,7 @@ typedef struct // Stores the input parameters for a sequence
     char Sequence[MAX_SEQUENCE_SIZE];
     int Size;
     int AllowRotation;
-    int ColumnCounterPermutations[MAX_SEQUENCE_SIZE]; // Stores the number of permutations which an increment in each piece's column counter represents
+    uint64_t ColumnCounterPermutations[MAX_SEQUENCE_SIZE]; // Stores the number of permutations which an increment in each piece's column counter represents
 } sequence_params;
 
 // Display 'prompt' (must be null-terminated) and return the char input by the user. If input empty or longer than one char, display 'prompt' again until a valid input
