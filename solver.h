@@ -40,8 +40,8 @@ typedef struct
     uint64_t Permutations;    
 } solver;
 
-// Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
-uint64_t getSequencePermutations(sequence_params *sequenceParams);
+// Calculate and return the total number of permutations at which the sequence in 'sequenceParams' can be dropped to the grid. If a non-null 'overflow' is passed, and if the permutation counter cannot store all permutations, return TRUE in 'overflow'
+uint64_t getSequencePermutations(sequence_params *sequenceParams, int *overflow);
 
 // Calculate the number of permutations which an increment in each piece's column counter represents
 void getColumnCounterPermutations(sequence_params *sequenceParams);
@@ -61,8 +61,8 @@ void setSolverStartPermutation(int solver);
 // Set 'solver' to the first permutation of the sequence in 'sequenceParams'
 void setToFirstPermutation(solver *solver, sequence_params *sequenceParams);
 
-// Set each solver's starting permutation and the number of permutations assigned to it for solving the sequence in 'sequenceParams'
-void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams);
+// Set each solver's starting permutation and the number of permutations assigned to it for solving the sequence in 'sequenceParams'. Return OVERFLOW_DETECTED if the permutation counter cannot store all permutations
+int initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams);
 
 // Return the y coordinate at which tetromino 'tet' will land when dropped into column 'droppedColumn', given height of the grid's columns in 'columnHeights'
 int getLandingHeight(tetromino *tet, int droppedColumn, int columnHeights[GRID_WIDTH]);

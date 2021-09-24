@@ -7,12 +7,14 @@
 #include "tetromino.h"
 
 #define SKIPPED_PERMUTATION -1
+#define OVERFLOW_DETECTED -1
 
-// Calculate and return the total number of permutations the sequence in 'sequenceParams' can be dropped to the grid
-uint64_t getSequencePermutations(sequence_params *sequenceParams)
+// Calculate and return the total number of permutations at which the sequence in 'sequenceParams' can be dropped to the grid. If a non-null 'overflow' is passed, and if the permutation counter cannot store all permutations, return TRUE in 'overflow'
+uint64_t getSequencePermutations(sequence_params *sequenceParams, int *overflow)
 {
-    // DONT NEED CONDITIONAL HERE ???
-    uint64_t sequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire sequence
+    uint64_t newSequencePermutations = sequenceParams->Size == 0 ? 0 : 1; // Stores permutations for entire sequence
+    uint64_t oldSequencePermutations = newSequencePermutations; // Used to check overflows
+    
     int piecePermutations = 0; // Stores permutations for current piece
     int pieceRotations;
 
@@ -23,11 +25,23 @@ uint64_t getSequencePermutations(sequence_params *sequenceParams)
         for (int rotation = 0; rotation < pieceRotations; rotation++)
             piecePermutations += GRID_WIDTH + 1 - getTetromino(sequenceParams->Sequence[piece], rotation)->Width;     
 
-        sequencePermutations *= piecePermutations;
-        piecePermutations = 0;
+        newSequencePermutations *= piecePermutations;
+
+        if (newSequencePermutations / piecePermutations != oldSequencePermutations && overflow != NULL)
+        {
+            *overflow = TRUE;            
+            printf("OVERFLOW DETECTED:\nNumber of permutations do not fit inside 64-bit uint\nTry a shorter sequence, or a sequence containing tetrominos with less permutations e.g. O or I\n\n");
+            break;
+        }         
+
+        else 
+        {
+            oldSequencePermutations = newSequencePermutations;        
+            piecePermutations = 0;        
+        }; 
     }       
 
-    return sequencePermutations;
+    return newSequencePermutations;
 }
 
 // Calculate the number of permutations which an increment in each piece's column counter represents
@@ -148,13 +162,17 @@ void setToFirstPermutation(solver *solver, sequence_params *sequenceParams)
     }
 }
 
-// Set each solver's starting permutation and the number of permutations assigned to it for solving the sequence in 'sequenceParams'
-void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams)
+// Set each solver's starting permutation and the number of permutations assigned to it for solving the sequence in 'sequenceParams'. Return OVERFLOW_DETECTED if the permutation counter cannot store all permutations
+int initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams)
 {
-    solver mainSolver = {{ 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, 0, 0, GRID_HEIGHT, 0, 0};
-    uint64_t remainingPermutations = getSequencePermutations(sequenceParams); 
+    solver mainSolver = {{ 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, { 0 }, 0, 0, GRID_HEIGHT, 0, 0};    
     uint64_t solverPermutations;
+    uint64_t remainingPermutations;
+    int overflow = FALSE;
 
+    remainingPermutations = getSequencePermutations(sequenceParams, &overflow);
+    if (overflow == TRUE) return OVERFLOW_DETECTED;
+    
     getColumnCounterPermutations(sequenceParams);
     setToFirstPermutation(&mainSolver, sequenceParams);
 
@@ -170,7 +188,9 @@ void initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *seque
             solvers[solver].Permutations = solverPermutations;
             remainingPermutations -= solvers[solver].Permutations;                                    
         }
-    }    
+    }
+
+    return TRUE;    
 }
 
 // Return the y coordinate at which tetromino 'tet' will land when dropped into column 'droppedColumn', given height of the grid's columns in 'columnHeights'
@@ -359,7 +379,7 @@ void printSolution(solver *solver, sequence_params *sequenceParams, time_t start
     printf("\n\n");
 
     printf("Sequence: %.*s\nTried all %llu permutations!\nMinimum stack height: %d\nElapsed time: %lds\n\n", \
-        sequenceParams->Size, sequenceParams->Sequence, getSequencePermutations(sequenceParams), solver->MinStackHeight, (long)(endTime-startTime));
+        sequenceParams->Size, sequenceParams->Sequence, getSequencePermutations(sequenceParams, NULL), solver->MinStackHeight, (long)(endTime-startTime));
 }
 
 // Solve the tetromino sequence in 'sequenceParams' and display the solution
@@ -373,7 +393,7 @@ void solveSequence(sequence_params *sequenceParams)
 
     printf("Sequence: %.*s\nSolving...\n\n", sequenceParams->Size, sequenceParams->Sequence);
 
-    initialiseSolvers(solvers, sequenceParams);
+    if (initialiseSolvers(solvers, sequenceParams) == OVERFLOW_DETECTED) return;
     runSolvers(solvers, sequenceParams);
 
     bestSolver = getBestSolver(solvers);

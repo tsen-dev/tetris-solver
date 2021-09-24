@@ -1,7 +1,7 @@
 #ifndef TETROMINO_H
 #define TETROMINO_H
 
-#define MAX_SEQUENCE_SIZE 12
+#define MAX_SEQUENCE_SIZE 20
 
 #define ROTATION_0 0
 #define ROTATION_90_ACW 1
