@@ -131,10 +131,10 @@ solver *solveTestCaseSequence(sequence_params *testSequenceParams, solver solver
 void runTests()
 {
     if (GRID_WIDTH != TEST_GRID_WIDTH) 
-        printf("GRID_WIDTH is different from TEST_GRID_WIDTH i.e. the width of the grid used when computing the test cases. Can't run tests!\n");
+        printf("GRID_WIDTH is different from TEST_GRID_WIDTH i.e. the width of the grid used when computing the test cases. Can't run tests!\n\n");
 
     else if (MAX_SEQUENCE_SIZE < MAX_TEST_SEQUENCE_LENGTH)
-        printf("MAX_SEQUENCE_SIZE is less than some test sequences (MAX_TEST_SEQUENCE_SIZE), can't run tests!\n");
+        printf("MAX_SEQUENCE_SIZE is less than some test sequences (MAX_TEST_SEQUENCE_SIZE), can't run tests!\n\n");
 
     else 
     {

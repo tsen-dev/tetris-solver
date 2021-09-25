@@ -8,7 +8,7 @@
 #include "input_utils.h"
 
 #define NUMBER_OF_SOLVERS 10
-#define PROGRESS_DISPLAY_INTERVAL 10000000
+#define PROGRESS_DISPLAY_INTERVAL 100000000
 #define OVERFLOW_DETECTED -1
 
 typedef struct
