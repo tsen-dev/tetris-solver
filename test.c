@@ -118,7 +118,7 @@ solver *solveTestCaseSequence(sequence_params *testSequenceParams, solver solver
     time_t startTime;
     time(&startTime);
 
-    initialiseSolvers(solvers, testSequenceParams);
+    if (initialiseSolvers(solvers, testSequenceParams) == OVERFLOW_DETECTED) return NULL;
     runSolvers(solvers, testSequenceParams);                
 
     bestSolver = getBestSolver(solvers);
@@ -153,12 +153,18 @@ void runTests()
 
             bestSolver = solveTestCaseSequence(&testCases[test].SequenceParams, solvers);
 
-            if (memcmp(testCases[test].PieceColumns, bestSolver->BestPieceColumns, sizeof(testCases[test].PieceColumns)) == 0 && \
+            // Test failed due to overflow
+            if (bestSolver == NULL) failedTests++; 
+
+            // Test passed
+            else if (memcmp(testCases[test].PieceColumns, bestSolver->BestPieceColumns, sizeof(testCases[test].PieceColumns)) == 0 && \
                 memcmp(testCases[test].PieceRotations, bestSolver->BestPieceRotations, sizeof(testCases[test].PieceRotations)) == 0)
             {
                 printf("Test %d: PASSED\n\n", test);
                 passedTests++;
             }                
+
+            // Test failed due to incorrect solution
             else 
             {
                 printf("Expected permutation: ");

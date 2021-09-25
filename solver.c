@@ -7,7 +7,6 @@
 #include "tetromino.h"
 
 #define SKIPPED_PERMUTATION -1
-#define OVERFLOW_DETECTED -1
 
 // Calculate and return the total number of permutations at which the sequence in 'sequenceParams' can be dropped to the grid. If a non-null 'overflow' is passed, and if the permutation counter cannot store all permutations, return TRUE in 'overflow'
 uint64_t getSequencePermutations(sequence_params *sequenceParams, int *overflow)
