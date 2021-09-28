@@ -7,7 +7,7 @@
 #include "tetromino.h"
 #include "input_utils.h"
 
-#define NUMBER_OF_SOLVERS 16
+#define NUMBER_OF_SOLVERS 8
 #define PROGRESS_DISPLAY_INTERVAL 100000000
 #define OVERFLOW_DETECTED -1
 

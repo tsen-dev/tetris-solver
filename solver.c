@@ -183,7 +183,7 @@ int initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequen
     setToFirstPermutation(&mainSolver, sequenceParams);
 
     for (int solver = 0; solver < NUMBER_OF_SOLVERS; solver++)
-    {
+    {        
         solverPermutations = remainingPermutations / (NUMBER_OF_SOLVERS - solver); 
 
         if (solverPermutations == 0) solvers[solver].Permutations = 0;            
@@ -194,6 +194,8 @@ int initialiseSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequen
             solvers[solver].Permutations = solverPermutations;
             remainingPermutations -= solvers[solver].Permutations;                                    
         }
+        
+        solvers[solver].SolverID = solver;
     }
 
     return TRUE;    
@@ -352,8 +354,7 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
     solver_thread_params solverThreadParams[NUMBER_OF_SOLVERS];
 
     for (int solver = 0; solver < NUMBER_OF_SOLVERS; solver++)
-    {
-        solvers[solver].SolverID = solver;
+    {        
         solverThreadParams[solver].Solver = &solvers[solver];
         solverThreadParams[solver].SequenceParams = sequenceParams;
         solverThreadHandles[solver] = CreateThread(NULL, 0, runSolver, &solverThreadParams[solver], 0, NULL);
