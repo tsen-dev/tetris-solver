@@ -6,14 +6,9 @@
 #include "solver.h"
 #include "input_utils.h"
 #include "tetromino.h"
+#include "solver_thread_params.h"
 
 #define SKIPPED_PERMUTATION -1
-
-typedef struct
-{
-    solver *Solver;
-    sequence_params *SequenceParams;
-} solver_thread_params;
 
 // Calculate and return the total number of permutations at which the sequence in 'sequenceParams' can be dropped to the grid. If a non-null 'overflow' is passed, and if the permutation counter cannot store all permutations, return TRUE in 'overflow'
 uint64_t getSequencePermutations(sequence_params *sequenceParams, int *overflow)
