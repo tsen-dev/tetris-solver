@@ -8,7 +8,7 @@
 #include "tetromino.h"
 #include "input_utils.h"
 
-#define PROGRESS_DISPLAY_INTERVAL 100000000
+#define PROGRESS_DISPLAY_INTERVAL ((uint64_t) 1e12)
 #define OVERFLOW_DETECTED -1
 #define SKIPPED_PERMUTATION -1
 

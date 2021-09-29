@@ -30,6 +30,7 @@ DWORD WINAPI runSolver(LPVOID threadParams)
     solver *solver = solverThreadParams->Solver;
     sequence_params *sequenceParams = solverThreadParams->SequenceParams;
     int stackHeight;
+    int progressDisplayThreshold = 1;
 
     time_t startTime;
     time(&startTime);        
@@ -57,8 +58,11 @@ DWORD WINAPI runSolver(LPVOID threadParams)
         }
         
         // Print solver progress
-        if (solver->CurrentPermutation % PROGRESS_DISPLAY_INTERVAL == 0)
+        if (solver->CurrentPermutation / PROGRESS_DISPLAY_INTERVAL == progressDisplayThreshold)
+        {
             printSolverProgress(solver, startTime);                                 
+            progressDisplayThreshold++;
+        }            
     }
 
     printSolverProgress(solver, startTime);
@@ -95,6 +99,7 @@ void* runSolver(void* threadParams)
     solver *solver = solverThreadParams->Solver;
     sequence_params *sequenceParams = solverThreadParams->SequenceParams;
     int stackHeight;
+    int progressDisplayThreshold = 1;
 
     time_t startTime;
     time(&startTime);        
@@ -122,8 +127,11 @@ void* runSolver(void* threadParams)
         }
         
         // Print solver progress
-        if (solver->CurrentPermutation % PROGRESS_DISPLAY_INTERVAL == 0)
+        if (solver->CurrentPermutation / PROGRESS_DISPLAY_INTERVAL == progressDisplayThreshold)
+        {
             printSolverProgress(solver, startTime);                                 
+            progressDisplayThreshold++;
+        }                                       
     }
 
     printSolverProgress(solver, startTime);
@@ -137,6 +145,7 @@ void* runSolver(void* threadParams)
 void runSolver(solver * solver, sequence_params *sequenceParams)
 {
     int stackHeight; 
+    int progressDisplayThreshold = 1;
 
     time_t startTime;
     time(&startTime);
@@ -161,9 +170,13 @@ void runSolver(solver * solver, sequence_params *sequenceParams)
             else solver->LastChangedPiece = getNextPermutation(solver, sequenceParams);                         
             solver->CurrentPermutation++;
         }
+
         // Print solver progress
-        if (solver->CurrentPermutation % PROGRESS_DISPLAY_INTERVAL == 0)
+        if (solver->CurrentPermutation / PROGRESS_DISPLAY_INTERVAL == progressDisplayThreshold)
+        {
             printSolverProgress(solver, startTime);                                 
+            progressDisplayThreshold++;
+        }                                            
     }
 
     printSolverProgress(solver, startTime);
