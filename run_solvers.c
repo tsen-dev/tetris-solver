@@ -17,9 +17,16 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
         solverThreadParams[solver].Solver = &solvers[solver];
         solverThreadParams[solver].SequenceParams = sequenceParams;
         solverThreadHandles[solver] = CreateThread(NULL, 0, runSolver, &solverThreadParams[solver], 0, NULL);
+
+        if (solverThreadHandles[solver] == NULL)
+        {
+            printf("Could not create solver thread!\nRunning solver %d in main thread...\n\n", solvers[solver].SolverID);
+            runSolver(&solverThreadParams[solver]);
+        }
     }    
 
-    WaitForMultipleObjects(NUMBER_OF_SOLVERS, solverThreadHandles, TRUE, INFINITE);
+    for (int solverThread = 0; solverThread < NUMBER_OF_SOLVERS; solverThread++) 
+        WaitForSingleObject(solverThreadHandles[solverThread], INFINITE);    
 }
 
 // Runs the solver in its own thread of execution, using the 'solver' and 'sequence_params' parameters inside 'threadParams' (must point to a solver_thread_params)
@@ -85,6 +92,12 @@ void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequencePara
         solverThreadParams[solver].Solver = &solvers[solver];
         solverThreadParams[solver].SequenceParams = sequenceParams;
         pthread_create(&solverThreadHandles[solver], NULL, runSolver, &solverThreadParams[solver], 0, NULL);
+
+        if (solverThreadHandles[solver] == NULL)
+        {
+            printf("Could not create solver thread!\nRunning solver %d in main thread...\n\n", solvers[solver].SolverID);
+            runSolver(&solverThreadParams[solver]);
+        }
     }    
 
     for (int solverThread = 0; solverThread < NUMBER_OF_SOLVERS; solverThread++) 
