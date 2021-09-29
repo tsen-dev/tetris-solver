@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "solver.h": "c",
+        "grid.h": "c",
+        "tetromino.h": "c",
+        "input_utils.h": "c"
+    }
+}

@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "bool.h"
 #include "test.h"
 #include "grid.h"
 #include "tetromino.h"
 #include "solver.h"
-#include "bool.h"
+#include "run_solvers.h"
 
 testcase testCases[NUMBER_OF_TESTS] =
 {

@@ -6,9 +6,7 @@
 #include "solver.h"
 #include "input_utils.h"
 #include "tetromino.h"
-#include "solver_thread_params.h"
-
-#define SKIPPED_PERMUTATION -1
+#include "run_solvers.h"
 
 // Calculate and return the total number of permutations at which the sequence in 'sequenceParams' can be dropped to the grid. If a non-null 'overflow' is passed, and if the permutation counter cannot store all permutations, return TRUE in 'overflow'
 uint64_t getSequencePermutations(sequence_params *sequenceParams, int *overflow)
@@ -299,63 +297,6 @@ void printSolverProgress(solver *solver, time_t startTime)
         solver->SolverID, solver->CurrentPermutation, solver->Permutations, \
         100.0 * solver->CurrentPermutation / solver->Permutations, \
         (long) (currentTime - startTime));  
-}
-
-DWORD WINAPI runSolver(LPVOID threadParams)
-{
-    solver_thread_params *solverThreadParams = (solver_thread_params *) threadParams;
-
-    solver *solver = solverThreadParams->Solver;
-    sequence_params *sequenceParams = solverThreadParams->SequenceParams;
-    int stackHeight;
-
-    time_t startTime;
-    time(&startTime);        
-    
-    while (solver->CurrentPermutation < solver->Permutations)
-    {        
-        stackHeight = tryPermutation(solver, sequenceParams);
-        
-        // If the permutation wasn't skipped 
-        if (stackHeight != SKIPPED_PERMUTATION) 
-        {
-            // Save permutation if it is better than previous ones
-            if (stackHeight < solver->MinStackHeight) 
-            {
-                solver->MinStackHeight = stackHeight;
-                memcpy(solver->BestPieceColumns, solver->ColumnCounters, sizeof(solver->BestPieceColumns));
-                memcpy(solver->BestPieceRotations, solver->RotationCounters, sizeof(solver->BestPieceRotations)); 
-                solver->LastChangedPiece = 0; // Invalidate intermediate grid states since the minStackHeight has changed 
-                getNextPermutation(solver, sequenceParams);                         
-            }
-            
-            else solver->LastChangedPiece = getNextPermutation(solver, sequenceParams); 
-
-            solver->CurrentPermutation++;
-        }
-        
-        // Print solver progress
-        if (solver->CurrentPermutation % PROGRESS_DISPLAY_INTERVAL == 0)
-            printSolverProgress(solver, startTime);                                 
-    }
-
-    return 0;
-}
-
-// Try all column/rotation permutations and solve the sequence in 'sequenceParams' using the solvers in 'solvers'
-void runSolvers(solver solvers[NUMBER_OF_SOLVERS], sequence_params *sequenceParams)
-{       
-    HANDLE solverThreadHandles[NUMBER_OF_SOLVERS];
-    solver_thread_params solverThreadParams[NUMBER_OF_SOLVERS];
-
-    for (int solver = 0; solver < NUMBER_OF_SOLVERS; solver++)
-    {        
-        solverThreadParams[solver].Solver = &solvers[solver];
-        solverThreadParams[solver].SequenceParams = sequenceParams;
-        solverThreadHandles[solver] = CreateThread(NULL, 0, runSolver, &solverThreadParams[solver], 0, NULL);
-    }    
-
-    WaitForMultipleObjects(NUMBER_OF_SOLVERS, solverThreadHandles, TRUE, INFINITE);
 }
 
 // Return the solver in 'solvers' which found the solution resulting in the lowest stack height 

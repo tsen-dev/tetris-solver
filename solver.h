@@ -1,15 +1,24 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include <stdlib.h>
 #include <stdint.h>
 
 #include "grid.h"
 #include "tetromino.h"
 #include "input_utils.h"
 
-#define NUMBER_OF_SOLVERS 8
 #define PROGRESS_DISPLAY_INTERVAL 100000000
 #define OVERFLOW_DETECTED -1
+#define SKIPPED_PERMUTATION -1
+
+// Use multi-threaded implementation if on Windows or Linux OS
+#if defined _WIN32 || defined linux
+#define NUMBER_OF_SOLVERS 16
+
+#else
+#define NUMBER_OF_SOLVERS 1
+#endif
 
 typedef struct
 {
