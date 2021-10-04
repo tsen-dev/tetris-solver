@@ -20,9 +20,9 @@
 - A tetromino can be dropped into ```GRID_WIDTH + 1 - TETROMINO_WIDTH``` columns, where ```TETROMINO_WIDTH``` is the width of a tetromino in a **specific rotation** (0, 90, 180, or 270 degrees). If the tetromino has ```r``` rotations, (assuming its width is the same in all rotations) the number of permutations for that tetromino becomes ```r * (GRID_WIDTH + 1 - TETROMINO_WIDTH)```. Therefore, the number of permutations for a sequence of length ```n``` becomes ```(r * (GRID_WIDTH + 1 - TETROMINO_WIDTH)) ** n```.
 - In order to handle the exponentially growing number of permutations, certain **optimisations** are implemented:
     - **Divide and Conquer:** The search space of all permutations is divided and assigned to ```solver``` units which independently try the permutations assigned to them. Each solver unit runs on a seperate solver thread for **concurrent** operation. **Multi-threading** is supported for **Windows** and **Linux**, otherwise a single solver unit is used which runs on the main thread. The number of solver units is determined by the ```NUMBER_OF_SOLVERS``` macro in ```solver.h``` (defaults to 16 for Windows/Linux).
-    - **Efficient Collision Detection:** When dropping tetrominos into a grid, the state of the grid is stored and updated using the column heights of the grid/tetromino, instead of scanning the values in each cell.
+    - **Efficient Collision Detection:** When dropping tetrominos into a grid, the state of the grid is stored and updated using the column heights of the grid/tetromino, instead of scanning the values in each cell of the pattern.
     - **Grid State Restoration**: When trying a permutation, the grid state obtained after dropping each tetromino is individually saved. Given that the next permutation changes the column/rotation of piece ```n```, restore the grid state from the previous permutation before dropping piece ```n``` to avoid dropping these pieces again. This significantly reduces the number of collision detection calculations
-    - **Search Tree Pruning**: During solving, given that the current best permutation gives stack height is ```m```, and the length of the sequence is ```n```, if dropping the first ```p``` (such that ```p < n```) pieces gives a stack height ```>= m```, skip all permutations which have the prefix of the first ```p``` pieces at their current orientation. This is shown in practice in the demo below:
+    - **Search Tree Pruning**: During solving, given that the current lowest stack height is ```m```, and the length of the sequence is ```n```, if dropping the first ```p (p < n)``` pieces gives a stack height ```>= m```, skip all permutations which have the prefix of the first ```p``` pieces at their current orientation:
     ![Pruning Optimisation](readme_animations/working_principles_pruning_optimisation.gif)
 
 ## Additional Features
@@ -31,10 +31,10 @@
 - **Tests**: The program solves the testcase tetromino sequences in ```test.c``` and compares the solutions with the testcase solutions. Used during development and for verifying correct compilation
 
 
-## Add Custom Tetrominos
-If you need other shapes which are specific to your problem domain, you can add tetrominos with custom shapes:
-    - In ```tetromino.c``` define a ```tetromino``` array containing a ```tetromino``` struct for each rotation of your custom tetromino. In the ```Pattern``` attribute enter a ```'_'``` for blank cells and a different ```char``` which will represent your tetromino for other cells. For each rotation of your tetromino, its width, height, and the heights of its columns must also be entered. **Maximum dimensions for a tetromino are 4x4**.
-    - Declare your tetromino array in ```tetromino.h```.
-    - Change the ```getTetromino``` and ```getRotations``` functions in ```tetromino.c```, and the ```getSequence``` function in ```input_utils.c``` to add a case for your new tetromino
+## Adding Custom Tetrominos
+If you need other shapes which are specific to your problem domain, you can add custom tetrominos:
+- In ```tetromino.c``` define a ```tetromino``` array containing a ```tetromino``` struct for each rotation of your custom tetromino. In the ```Pattern``` attribute enter a ```'_'``` for blank cells and in others enter a different ```char``` which will represent your tetromino. For each rotation of your tetromino, a width/height value and a column heights array must also be supplied. **Maximum dimensions for a tetromino are 4x4**.
+- Declare your tetromino array in ```tetromino.h```.
+- Change the ```getTetromino``` and ```getRotations``` functions in ```tetromino.c```, and the ```getSequence``` function in ```input_utils.c``` to add a case for your new tetromino
 
 ## License
