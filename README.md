@@ -15,7 +15,9 @@
 - Maximum allowed length for a tetromino sequence is determined by the ```MAX_SEQUENCE_SIZE``` macro in ```tetromino.h```.
 
 ## Working Principles
-- The best **permutation** (a column/rotation value for each tetromino) is calculated by trying all possible permutations and saving the one which produced the shortest stack. The order in which the permutations are tried is shown below: ![Working Principles: Solving](readme_animations/working_principles_solving.gif)
+- The best **permutation** (a column/rotation value for each tetromino) is calculated by trying all possible permutations and saving the one which produced the shortest stack. The order in which the permutations are tried is shown below: 
+
+![Working Principles: Solving](readme_animations/working_principles_solving.gif)
 - A tetromino can be dropped into ```GRID_WIDTH + 1 - TETROMINO_WIDTH``` columns, where ```TETROMINO_WIDTH``` is the width of a tetromino in a **specific rotation** (0, 90, 180, or 270 degrees). If the tetromino has ```r``` rotations, (assuming its width is the same in all rotations) the number of permutations for that tetromino becomes ```r * (GRID_WIDTH + 1 - TETROMINO_WIDTH)```. Therefore, the number of permutations for a sequence of length ```n``` becomes ```(r * (GRID_WIDTH + 1 - TETROMINO_WIDTH)) ** n```.
 - In order to handle the exponentially growing number of permutations, certain **optimisations** are implemented:
     - **Divide and Conquer:** The search space of all permutations is divided and assigned to ```solver``` units which independently try the permutations assigned to them. Each solver unit runs on a seperate solver thread for **concurrent** operation. **Multi-threading** is supported for **Windows** and **Linux**, otherwise a single solver unit is used which runs on the main thread. The number of solver units is determined by the ```NUMBER_OF_SOLVERS``` macro in ```solver.h``` (defaults to 16 for Windows/Linux).
