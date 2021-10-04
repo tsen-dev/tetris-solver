@@ -16,7 +16,7 @@
 
 ## Working Principles
 - The best **permutation** (a column/rotation value for each tetromino) is calculated by trying all possible permutations and saving the one which produced the shortest stack. The order in which the permutations are tried is shown below:
-![Working Principles Solving](readme_animations/working_principles_solving.gif)
+    ![Working Principles Solving](readme_animations/working_principles_solving.gif)
 - A tetromino can be dropped into ```GRID_WIDTH + 1 - TETROMINO_WIDTH``` columns, where ```TETROMINO_WIDTH``` is the width of a tetromino in a **specific rotation** (0, 90, 180, or 270 degrees). If the tetromino has ```r``` rotations, (assuming its width is the same in all rotations) the number of permutations for that tetromino becomes ```r * (GRID_WIDTH + 1 - TETROMINO_WIDTH)```. Therefore, the number of permutations for a sequence of length ```n``` becomes ```(r * (GRID_WIDTH + 1 - TETROMINO_WIDTH)) ** n```.
 - In order to handle the exponentially growing number of permutations, certain **optimisations** are implemented:
     - **Divide and Conquer:** The search space of all permutations is divided and assigned to ```solver``` units which independently try the permutations assigned to them. Each solver unit runs on a seperate solver thread for **concurrent** operation. **Multi-threading** is supported for **Windows** and **Linux**, otherwise a single solver unit is used which runs on the main thread. The number of solver units is determined by the ```NUMBER_OF_SOLVERS``` macro in ```solver.h``` (defaults to 16 for Windows/Linux).
@@ -33,8 +33,8 @@
 
 ## Adding Custom Tetrominos
 If you need other shapes which are specific to your problem domain, you can add custom tetrominos:
-- In ```tetromino.c``` define a ```tetromino``` array containing a ```tetromino``` struct for each rotation of your custom tetromino. In the ```Pattern``` attribute enter a ```'_'``` for blank cells and in others enter a different ```char``` which will represent your tetromino. For each rotation of your tetromino, a width/height value and a column heights array must also be supplied. **Maximum dimensions for a tetromino are 4x4**.
-- Declare your tetromino array in ```tetromino.h```.
-- Change the ```getTetromino``` and ```getRotations``` functions in ```tetromino.c```, and the ```getSequence``` function in ```input_utils.c``` to add a case for your new tetromino
+1. In ```tetromino.c``` define a ```tetromino``` array containing a ```tetromino``` struct for each rotation of your custom tetromino. In the ```Pattern``` attribute enter a ```'_'``` for blank cells and in others enter a different ```char``` which will represent your tetromino. For each rotation of your tetromino, a width/height value and a column heights array must also be supplied. **Maximum dimensions for a tetromino are 4x4**.
+2. Declare your tetromino array in ```tetromino.h```.
+3. Change the ```getTetromino``` and ```getRotations``` functions in ```tetromino.c```, and the ```getSequence``` function in ```input_utils.c``` to add a case for your new tetromino
 
 ## License
