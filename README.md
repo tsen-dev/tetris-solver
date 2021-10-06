@@ -5,7 +5,6 @@
 - [Working Princinples](https://github.com/tsen-dev/tetris-solver#working-principles)
 - [Additional Features](https://github.com/tsen-dev/tetris-solver#additional-features)
 - [Adding Custom Tetrominos](https://github.com/tsen-dev/tetris-solver#add-custom-tetrominos)
-- [License](https://github.com/tsen-dev/tetris-solver#license)
 
 ## Overview
 ![Overview Demo](readme_animations/overview_demo.gif)
@@ -30,12 +29,11 @@
 - **Overflow detection**: If the number of permutations for a sequence is greater than 2^64, an overflow in the 64-bit permutation counter is detected and the solving operation is aborted as all permutations cannot be tried.
 - **Debug mode**: Creates an environment where the user can drop tetrominos into a grid one by one, in the specified column/rotation.  
 - **Tests**: The program solves the testcase tetromino sequences in ```test.c``` and compares the solutions with the testcase solutions. Used during development and for verifying correct compilation
+- **VS Code Build File**: ```.vscode/tasks.json``` contains the build configuration settings for compiling the code in this repository.
 
 
 ## Adding Custom Tetrominos
 If you need other shapes which are specific to your problem domain, you can add custom tetrominos:
 1. In ```tetromino.c``` define a ```tetromino``` array containing a ```tetromino``` struct for each rotation of your custom tetromino. In the ```Pattern``` attribute enter a ```'_'``` for blank cells and in others enter a different ```char``` which will represent your tetromino. For each rotation of your tetromino, a width/height value and a column heights array must also be supplied. **Maximum dimensions for a tetromino are 4x4**.
 2. Declare your tetromino array in ```tetromino.h```.
-3. Change the ```getTetromino``` and ```getRotations``` functions in ```tetromino.c```, and the ```getSequence``` function in ```input_utils.c``` to add a case for your new tetromino
-
-## License
+3. Change the ```getTetromino``` and ```getRotations``` functions in ```tetromino.c```, and the ```getSequence``` function in ```input_utils.c``` to add a case for your new tetromino.
