@@ -29,7 +29,7 @@
 - **Overflow detection**: If the number of permutations for a sequence is greater than 2^64, an overflow in the 64-bit permutation counter is detected and the solving operation is aborted as all permutations cannot be tried.
 - **Debug mode**: Creates an environment where the user can drop tetrominos into a grid one by one, in the specified column/rotation.  
 - **Tests**: The program solves the testcase tetromino sequences in ```test.c``` and compares the solutions with the testcase solutions. Used during development and for verifying correct compilation
-- **VS Code Build File**: ```.vscode/tasks.json``` contains the build configuration settings for compiling the code in this repository.
+- **VSCode Build File**: ```.vscode/tasks.json``` contains the build configuration settings for compiling the code in this repository using VSCode.
 
 
 ## Adding Custom Tetrominos
